@@ -20,17 +20,24 @@ Compile & run:
 int parse( char *str );
 
 
-char tokens[] = {
-    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0',
-    '+', '-', '*', '/', '(', ')', '%', '^',
-    ' '
+char token_number_type[] = {
+    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'
 };
 
+char token_operator_type[] = {
+    '+', '-', '*', '/', '%', '^'
+};
 
-char *token_names[] = {
-    "Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Zero",
-    "Plus", "Minus", "Multiplier", "Divider", "Left_parenthesis", "Right_parenthesis", "Remainder", "Power",
-    "Blank"
+char token_punctuation_type[] = {
+    '(', ')', ' '
+};
+
+enum token_type {
+    Unknown = 0, Number, Operator, Punctuation
+};
+
+char *token_type_name[] = {
+    "Unknown", "Number", "Operator", "Punctuation"
 };
 
 
@@ -48,21 +55,41 @@ int main( int argc, char *argv[] ) {
 }
 
 
+/*
+Input: a token
+Output: token type.
+*/
 int token_exists( char t ) {
-    int list_size = sizeof( tokens );
+    int list_size = sizeof( token_number_type );
     for ( int i = 0; i < list_size; i++ ) {
-        if (t == tokens[i]) {
-            return i;
+        if (t == token_number_type[i]) {
+            return Number;
         }
     }
-    return -1;
+
+    list_size = sizeof( token_operator_type );
+    for ( int i = 0; i < list_size; i++ ) {
+        if (t == token_operator_type[i]) {
+            return Operator;
+        }
+    }
+
+    list_size = sizeof( token_punctuation_type );
+    for ( int i = 0; i < list_size; i++ ) {
+        if (t == token_punctuation_type[i]) {
+            return Punctuation;
+        }
+    }
+
+    return Unknown;
 } 
 
 
 /*
- Complexity O(mn)
- No optimizations at all!
- Blank spaces are discarded.
+Input: a string
+Output: number of invalid tokens found.
+
+Blank spaces are discarded.
 */
 int parse( char *str ) {
     printf( "\n\n--> Parsing string: %s\n\n", str );
@@ -72,15 +99,11 @@ int parse( char *str ) {
 
     printf("RESULT: \n\n");
     for ( int i = 0; i < str_size; i++ ) {
-        int token_index = token_exists( str[i] );
-        if ( token_index <= -1 ) {
-            printf( "UNKNOWN( '%c' ), ", str[i] );
+        int token_type = token_exists( str[i] );
+        if ( token_type == Unknown )
             invalid_tokens += 1;
-        } else {
-            if (str[i] != ' ') {
-                printf( "%s( '%c' ), ", token_names[token_index], str[i] );
-            }
-        }
+        if (str[i] != ' ')
+            printf( "%s( '%c' ), ", token_type_name[token_type], str[i] );
     }
 
     printf( "\n\n---------- Parsing completed.\n" );
