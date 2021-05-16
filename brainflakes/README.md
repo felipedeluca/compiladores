@@ -19,7 +19,7 @@ Feel free to use and modify the source code as much as you want.
 
 #### References
 
-##### Branfuck language
+##### Brainfuck language
 * Esolangs Wiki: https://esolangs.org/wiki/Brainfuck
 
 ##### Included examples
